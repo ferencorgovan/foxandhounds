@@ -1,14 +1,17 @@
 package hu.nye.progtech.foxandhounds.service;
 
+import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 import hu.nye.progtech.foxandhounds.model.Player;
+import hu.nye.progtech.foxandhounds.service.input.InputReader;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 
 public class CommandHandler {
-    MapPrinter mapPrinter = new MapPrinter();
-    Player player = new Player("Player");
+    private final MapPrinter mapPrinter = new MapPrinter();
+    private final Player player = new Player("Player");
+    private final Move move = new Move();
 
-    public void handleCommand(String input, MapVO map) {
+    public void handleCommand(String input, GameState gameState, MapVO map) {
         String command = input.split(" ")[0].toLowerCase();
 
         switch (command) {
@@ -28,6 +31,12 @@ public class CommandHandler {
 
             case "print":
                 mapPrinter.printMap(map);
+                break;
+
+            case "move":
+                String coordinate = input.split(" ")[1];
+                gameState.setCurrentMap(move.foxMove(map, gameState, coordinate));
+                mapPrinter.printMap(gameState.getCurrentMap());
                 break;
 
             case "exit":

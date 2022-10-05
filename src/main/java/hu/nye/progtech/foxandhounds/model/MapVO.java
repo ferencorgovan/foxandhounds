@@ -6,11 +6,20 @@ import java.util.Objects;
 public class MapVO {
     private final int mapLength;
     private final char[][] map;
+    private String foxStart;
 
+    public String getFoxStart() {
+        return foxStart;
+    }
 
-    public MapVO(int mapLength, char[][] map) {
+    public void setFoxStart(String foxStart) {
+        this.foxStart = foxStart;
+    }
+
+    public MapVO(int mapLength, char[][] map, String foxStart) {
         this.mapLength = mapLength;
         this.map = deepCopy(map);
+        this.foxStart = foxStart;
     }
 
     public int getMapLength() {
