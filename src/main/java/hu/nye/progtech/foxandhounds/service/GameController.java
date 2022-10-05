@@ -18,10 +18,10 @@ public class GameController {
 
     public void playGame() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Game started! Type 'help' for commands.");
+        System.out.println("\nGame started! Type 'help' for commands.");
         String input;
         do {
-            System.out.print("Enter a command: ");
+            System.out.print("\nEnter a command: ");
             input = scanner.nextLine();
             commandHandler.handleCommand(input, gameState, mapVO);
         } while (!input.equals("exit"));

@@ -7,19 +7,25 @@ public class MapVO {
     private final int mapLength;
     private final char[][] map;
     private String foxStart;
+    private final String[] houndsStart;
 
     public String getFoxStart() {
         return foxStart;
+    }
+
+    public String[] getHoundsStart() {
+        return houndsStart;
     }
 
     public void setFoxStart(String foxStart) {
         this.foxStart = foxStart;
     }
 
-    public MapVO(int mapLength, char[][] map, String foxStart) {
+    public MapVO(int mapLength, char[][] map, String foxStart, String[] houndsStart) {
         this.mapLength = mapLength;
         this.map = deepCopy(map);
         this.foxStart = foxStart;
+        this.houndsStart = houndsStart;
     }
 
     public int getMapLength() {

@@ -3,7 +3,6 @@ package hu.nye.progtech.foxandhounds.service;
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 import hu.nye.progtech.foxandhounds.model.Player;
-import hu.nye.progtech.foxandhounds.service.input.InputReader;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 
 public class CommandHandler {
@@ -26,7 +25,10 @@ public class CommandHandler {
                 break;
 
             case "help":
-                System.out.println("*commands*");
+                System.out.println("\nUsable commands: \n- 'name' : Change player name\n" +
+                                    "- 'print' : Print current state of map\n" +
+                                    "- 'move [RowIndexColumnIndex]' : Move fox (E.g. 'move 61') \n" +
+                                    "- 'exit' : End the game");
                 break;
 
             case "print":
@@ -35,8 +37,15 @@ public class CommandHandler {
 
             case "move":
                 String coordinate = input.split(" ")[1];
-                gameState.setCurrentMap(move.foxMove(map, gameState, coordinate));
-                mapPrinter.printMap(gameState.getCurrentMap());
+                try {
+                    gameState.setCurrentMap(move.foxMove(map, gameState, coordinate));
+                    mapPrinter.printMap(gameState.getCurrentMap());
+                } catch (RuntimeException e) {
+                    System.out.println(e.getMessage());
+                }
+                //System.out.println("Enemy's turn: ");
+                //gameState.setCurrentMap(move.enemyMove(map, gameState));
+                //mapPrinter.printMap(gameState.getCurrentMap());
                 break;
 
             case "exit":
