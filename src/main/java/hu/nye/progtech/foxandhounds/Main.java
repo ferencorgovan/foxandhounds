@@ -15,8 +15,15 @@ import hu.nye.progtech.foxandhounds.service.validator.MoveValidator;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 
+/**
+ * Entry point of Fox and Hounds game.
+ */
 public class Main {
-
+    /**
+     * Entrypoint of the game.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         PrintWrapper printWrapper = new PrintWrapper();
         MapGenerator mapGenerator = new MapGenerator();

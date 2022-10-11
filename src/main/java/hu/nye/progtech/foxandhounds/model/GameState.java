@@ -2,6 +2,9 @@ package hu.nye.progtech.foxandhounds.model;
 
 import java.util.Objects;
 
+/**
+ * Current state of the game.
+ */
 public class GameState {
     private MapVO currentMap;
     private boolean gameOver;

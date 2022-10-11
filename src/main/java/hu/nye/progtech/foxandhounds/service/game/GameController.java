@@ -5,6 +5,9 @@ import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Component that controls the flow of a game.
+ */
 public class GameController {
     private final GameState gameState;
     private final GameStepPerformer gameStepPerformer;
@@ -17,6 +20,9 @@ public class GameController {
         this.printWrapper = printWrapper;
     }
 
+    /**
+     * Starts the game loop.
+     */
     public void playGame() {
         LOGGER.info("Starting game");
         printWrapper.printLine("\nGame started! Type 'help' for commands.");

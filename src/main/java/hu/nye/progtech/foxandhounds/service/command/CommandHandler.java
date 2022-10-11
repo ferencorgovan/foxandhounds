@@ -9,6 +9,9 @@ import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class used to process input commands.
+ */
 public class CommandHandler {
     private final MapPrinter mapPrinter;
     private final Move move;
@@ -25,6 +28,11 @@ public class CommandHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
     private static final String MOVE_COMMAND_REGEX = "^move [0-7][0-7]$";
 
+    /**
+     * Handles an input command.
+     *
+     * @param input the input as a string to be handled
+     */
     public void handleCommand(String input) {
         String command = input.split(" ")[0].toLowerCase();
 

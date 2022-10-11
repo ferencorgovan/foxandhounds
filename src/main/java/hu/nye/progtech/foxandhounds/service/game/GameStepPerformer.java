@@ -6,6 +6,9 @@ import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Component that performs a game step.
+ */
 public class GameStepPerformer {
     private final InputReader inputReader;
     private final CommandHandler commandHandler;
@@ -18,6 +21,9 @@ public class GameStepPerformer {
         this.printWrapper = printWrapper;
     }
 
+    /**
+     * Performs a game step.
+     */
     public void performGameStep() {
         printWrapper.print("\nEnter a command: ");
         String input = inputReader.readInput();

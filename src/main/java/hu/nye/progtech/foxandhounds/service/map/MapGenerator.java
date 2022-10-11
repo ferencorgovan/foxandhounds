@@ -6,11 +6,19 @@ import hu.nye.progtech.foxandhounds.model.MapVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Component that generates a Fox and Hounds map.
+ */
 public class MapGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapGenerator.class);
 
+    /**
+     * Generates game map.
+     *
+     * @param mapLength Length of a game map.
+     * @return the generated map
+     */
     public MapVO generateMap(int mapLength) {
 
         LOGGER.info("Generating map");

@@ -3,6 +3,9 @@ package hu.nye.progtech.foxandhounds.model;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Model class used to represent a Fox and Hounds map.
+ */
 public class MapVO {
     private final int mapLength;
     private final char[][] map;

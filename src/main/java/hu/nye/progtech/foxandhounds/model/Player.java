@@ -1,5 +1,8 @@
 package hu.nye.progtech.foxandhounds.model;
 
+/**
+ * Model class used to represent a player.
+ */
 public class Player {
     private String name;
 

@@ -12,6 +12,9 @@ import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class used to implement player and enemy game turns.
+ */
 public class Move {
     private final MoveValidator moveValidator;
     private final PrintWrapper printWrapper;
@@ -22,6 +25,13 @@ public class Move {
         this.printWrapper = printWrapper;
     }
 
+    /**
+     * Performs a player turn.
+     *
+     * @param gameState Current state of the game
+     * @param moveTo Coordinate of move destination
+     * @throws RuntimeException if the move is invalid
+     */
     public void foxMove(GameState gameState, String moveTo) throws RuntimeException {
         LOGGER.info("Performing player move");
         MapVO currentMap = gameState.getCurrentMap();
@@ -57,6 +67,11 @@ public class Move {
         gameState.setCurrentMap(new MapVO(currentMap.getMapLength(), map, moveTo, houndsStart));
     }
 
+    /**
+     * Performs an enemy turn.
+     *
+     * @param gameState Current state of the game
+     */
     public void enemyMove(GameState gameState) {
         LOGGER.info("Performing enemy move");
 
