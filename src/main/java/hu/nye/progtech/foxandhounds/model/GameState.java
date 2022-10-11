@@ -4,9 +4,29 @@ import java.util.Objects;
 
 public class GameState {
     private MapVO currentMap;
+    private boolean gameOver;
+    private Player player;
 
-    public GameState(MapVO currentMap) {
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public GameState(MapVO currentMap, boolean gameIsOver, Player name) {
         this.currentMap = currentMap;
+        this.gameOver = gameIsOver;
+        this.player = name;
     }
 
     public MapVO getCurrentMap() {

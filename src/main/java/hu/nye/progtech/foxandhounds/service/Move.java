@@ -8,12 +8,18 @@ import hu.nye.progtech.foxandhounds.model.MapVO;
 public class Move {
     private final MoveValidator moveValidator = new MoveValidator();
 
-    public MapVO foxMove(MapVO mapVO, GameState gameState, String moveTo) throws RuntimeException {
+    public void foxMove(GameState gameState, String moveTo) throws RuntimeException {
+        MapVO currentMap = gameState.getCurrentMap();
         String foxLocation = gameState.getCurrentMap().getFoxStart();
-        String[] houndsStart = gameState.getCurrentMap().getHoundsStart();
-        moveValidator.outOfMap(moveTo);
+
+        if (!moveValidator.isValidCoordinate(moveTo)) {
+            throw new RuntimeException("Out of map");
+        }
         moveValidator.invalidMove(moveTo, foxLocation);
-        moveValidator.occupiedSpace(mapVO, moveTo, foxLocation);
+
+        if (!moveValidator.isFree(currentMap, moveTo)) {
+            throw new RuntimeException("Space is occupied");
+        }
 
         int moveToRow = Character.getNumericValue(moveTo.charAt(0));
         int moveToColumn = Character.getNumericValue(moveTo.charAt(1));
@@ -24,33 +30,50 @@ public class Move {
         char[][] map = gameState.getCurrentMap().getMap();
         map[foxRow][foxColumn] = '*';
         map[moveToRow][moveToColumn] = 'F';
-
-        return new MapVO(mapVO.getMapLength(), map, moveTo, houndsStart);
+        String[] houndsStart = gameState.getCurrentMap().getHoundsStart();
+        if (moveToRow == 0) {
+            gameState.setGameOver(true);
+        }
+        gameState.setCurrentMap(new MapVO(currentMap.getMapLength(), map, moveTo, houndsStart));
     }
 
-    public MapVO enemyMove(MapVO mapVO, GameState gameState) {
-        String foxLocation = gameState.getCurrentMap().getFoxStart();
-
+    public void enemyMove(GameState gameState) {
+        MapVO currentMap = gameState.getCurrentMap();
         String[] hounds = gameState.getCurrentMap().getHoundsStart();
-
+        char[][] map = currentMap.getMap();
         Random r = new Random();
-        int selectedHound = r.nextInt(4);
 
-        char[][] map = gameState.getCurrentMap().getMap();
+        int selectedHound = -1;
+        int houndRowIndex = -1;
+        int houndColumnIndex = -1;
+        String houndRow = "";
+        String houndColumn = "";
 
-        int houndRowIndex = Character.getNumericValue(hounds[selectedHound].charAt(0));
-        int houndColumnIndex = Character.getNumericValue(hounds[selectedHound].charAt(1));
+        while (!moveValidator.isValidCoordinate(houndRow + houndColumn) ||
+                !moveValidator.isFree(currentMap, houndRow + houndColumn)) {
+            selectedHound = r.nextInt(4);
+            //System.out.println("Selected Hound #" + selectedHound);
+            houndRowIndex = Character.getNumericValue(hounds[selectedHound].charAt(0));
+            houndColumnIndex = Character.getNumericValue(hounds[selectedHound].charAt(1));
+            houndRow = String.valueOf(houndRowIndex + 1);
+            houndColumn = String.valueOf(houndColumnIndex + (r.nextBoolean() ? 1 : -1));
+        }
+        // TODO: enemy move - index 8 out of bounds fo length 8
 
+        //System.out.println("Moving Hound #" + selectedHound + " to " + houndRow + houndColumn);
         map[houndRowIndex][houndColumnIndex] = '*';
-
-        String houndRow = String.valueOf(houndRowIndex+1);
-        String houndColumn = String.valueOf(houndColumnIndex + (r.nextBoolean() ? 1: -1));
-
-        moveValidator.outOfMap(houndRow + houndColumn);
-        map[Integer.valueOf(houndRow)][Integer.valueOf(houndColumn)] = 'H';
+        map[Integer.parseInt(houndRow)][Integer.parseInt(houndColumn)] = 'H';
 
         hounds[selectedHound] = houndRow + houndColumn;
+        String foxLocation = gameState.getCurrentMap().getFoxStart();
 
-        return new MapVO(mapVO.getMapLength(), map, foxLocation, hounds);
+        int foxRow = Character.getNumericValue(foxLocation.charAt(0));
+        int foxColumn = Character.getNumericValue(foxLocation.charAt(1));
+        /*if (map[foxRow-1][foxColumn-1] == 'H' && map[foxRow-1][foxColumn+1] == 'H' &&
+        map[foxRow+1][foxColumn-1] == 'H' && map[foxRow+1][foxColumn+1] == 'H') {
+            gameState.setGameOver(true);
+            System.out.println("Hounds win.");
+        }*/
+        gameState.setCurrentMap(new MapVO(currentMap.getMapLength(), map, foxLocation, hounds));
     }
 }

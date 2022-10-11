@@ -1,29 +1,23 @@
 package hu.nye.progtech.foxandhounds.service;
 
-import java.util.Scanner;
-
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 
 public class GameController {
     MapVO mapVO;
     GameState gameState;
+    GameStepPerformer gameStepPerformer;
 
-    public GameController(GameState gameState, MapVO mapVO) {
+    public GameController(GameState gameState, MapVO mapVO, GameStepPerformer gameStepPerformer) {
         this.gameState = gameState;
         this.mapVO = mapVO;
+        this.gameStepPerformer = gameStepPerformer;
     }
 
-    CommandHandler commandHandler = new CommandHandler();
-
     public void playGame() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("\nGame started! Type 'help' for commands.");
-        String input;
-        do {
-            System.out.print("\nEnter a command: ");
-            input = scanner.nextLine();
-            commandHandler.handleCommand(input, gameState, mapVO);
-        } while (!input.equals("exit"));
+        while (!gameState.isGameOver()) {
+            gameStepPerformer.performGameStep();
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.util.Objects;
 public class MapVO {
     private final int mapLength;
     private final char[][] map;
-    private String foxStart;
+    private final String foxStart;
     private final String[] houndsStart;
 
     public String getFoxStart() {
@@ -15,10 +15,6 @@ public class MapVO {
 
     public String[] getHoundsStart() {
         return houndsStart;
-    }
-
-    public void setFoxStart(String foxStart) {
-        this.foxStart = foxStart;
     }
 
     public MapVO(int mapLength, char[][] map, String foxStart, String[] houndsStart) {
