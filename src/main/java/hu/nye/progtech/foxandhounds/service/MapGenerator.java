@@ -1,6 +1,5 @@
 package hu.nye.progtech.foxandhounds.service;
 
-import java.util.PrimitiveIterator;
 import java.util.Random;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;

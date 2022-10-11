@@ -11,18 +11,13 @@ public class MoveValidator {
         return Pattern.matches(COORDINATE_REGEX, coordinate);
     }
 
-    public void invalidMove(String moveTo, String foxLocation) {
+    public Boolean isValidMove(String moveTo, String foxLocation) {
         int moveToRow = Character.getNumericValue(moveTo.charAt(0));
         int moveToColumn = Character.getNumericValue(moveTo.charAt(1));
         int foxRow = Character.getNumericValue(foxLocation.charAt(0));
         int foxColumn = Character.getNumericValue(foxLocation.charAt(1));
-        if (!((moveToRow == foxRow - 1 && moveToColumn == foxColumn - 1) ||
-                (moveToRow == foxRow - 1 && moveToColumn == foxColumn + 1) ||
-                (moveToRow == foxRow + 1 && moveToColumn == foxColumn - 1) ||
-                (moveToRow == foxRow + 1 && moveToColumn == foxColumn + 1)) ||
-                !(moveToRow >= 0 && moveToRow < 7 && moveToColumn >= 0 && moveToColumn <= 7)) {
-            throw new RuntimeException("Invalid move");
-        }
+        return ((moveToRow == foxRow + 1 || moveToRow == foxRow - 1) &&
+                (moveToColumn == foxColumn + 1 || moveToColumn == foxColumn - 1));
     }
 
     public Boolean isFree(MapVO mapVO, String coordinate) {

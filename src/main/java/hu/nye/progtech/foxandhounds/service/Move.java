@@ -4,12 +4,19 @@ import java.util.Random;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
+import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Move {
-    private final MoveValidator moveValidator = new MoveValidator();
+    private final MoveValidator moveValidator;
+    private final PrintWrapper printWrapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(Move.class);
+
+    public Move(MoveValidator moveValidator, PrintWrapper printWrapper) {
+        this.moveValidator = moveValidator;
+        this.printWrapper = printWrapper;
+    }
 
     public void foxMove(GameState gameState, String moveTo) throws RuntimeException {
         LOGGER.info("Performing player move");
@@ -17,13 +24,16 @@ public class Move {
         String foxLocation = gameState.getCurrentMap().getFoxStart();
 
         if (!moveValidator.isValidCoordinate(moveTo)) {
-            LOGGER.error("Out of map");
+            printWrapper.printLine("Out of map");
             throw new RuntimeException("Out of map");
         }
-        moveValidator.invalidMove(moveTo, foxLocation);
+        if (!moveValidator.isValidMove(moveTo, foxLocation)) {
+            printWrapper.printLine("Invalid move");
+            throw new RuntimeException("Invalid move");
+        }
 
         if (!moveValidator.isFree(currentMap, moveTo)) {
-            LOGGER.error("Space is occupied");
+            printWrapper.printLine("Space is occupied");
             throw new RuntimeException("Space is occupied");
         }
 
@@ -32,7 +42,7 @@ public class Move {
         int foxRow = Character.getNumericValue(foxLocation.charAt(0));
         int foxColumn = Character.getNumericValue(foxLocation.charAt(1));
 
-        LOGGER.info("Moving fox to: " + moveToRow + moveToColumn);
+        printWrapper.printLine("Moving fox to: " + moveToRow + moveToColumn);
         char[][] map = gameState.getCurrentMap().getMap();
         map[foxRow][foxColumn] = '*';
         map[moveToRow][moveToColumn] = 'F';
@@ -65,7 +75,7 @@ public class Move {
             houndRow = String.valueOf(houndRowIndex + 1);
             houndColumn = String.valueOf(houndColumnIndex + (r.nextBoolean() ? 1 : -1));
         }
-        LOGGER.info("Enemy moves Hound #" + (selectedHound + 1) + " to " + houndRow + houndColumn);
+        printWrapper.printLine("Enemy moves Hound #" + (selectedHound + 1) + " to " + houndRow + houndColumn);
         map[houndRowIndex][houndColumnIndex] = '*';
         map[Integer.parseInt(houndRow)][Integer.parseInt(houndColumn)] = 'H';
 
