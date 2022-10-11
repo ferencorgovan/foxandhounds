@@ -1,4 +1,4 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.validator;
 
 import java.util.regex.Pattern;
 

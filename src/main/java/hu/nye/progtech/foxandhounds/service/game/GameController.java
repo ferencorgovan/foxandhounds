@@ -1,4 +1,4 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.game;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;

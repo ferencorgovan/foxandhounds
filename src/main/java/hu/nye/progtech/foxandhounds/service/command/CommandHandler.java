@@ -1,8 +1,9 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.command;
 
 import java.util.regex.Pattern;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
@@ -22,7 +23,6 @@ public class CommandHandler {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
-    private static final String PRINT_COMMAND_REGEX = "print";
     private static final String MOVE_COMMAND_REGEX = "^move [0-7][0-7]$";
 
     public void handleCommand(String input) {
@@ -35,7 +35,7 @@ public class CommandHandler {
                     gameState.getPlayer().setName(name);
                     LOGGER.info("Changing player name");
                     printWrapper.printLine("Player name changed to " + name);
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     LOGGER.error("Invalid name!");
                 }
                 break;
@@ -54,7 +54,7 @@ public class CommandHandler {
             case "move":
                 if (!Pattern.matches(MOVE_COMMAND_REGEX, input)) {
                     printWrapper.printLine("Invalid move");
-                    throw new RuntimeException("Invalid move!");
+                    throw new InvalidMoveException("Invalid move!");
                 }
 
                 String coordinate = input.split(" ")[1];

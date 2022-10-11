@@ -1,9 +1,13 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.command;
 
 import java.util.Random;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidCoordinateException;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
+import hu.nye.progtech.foxandhounds.service.exception.OccupiedSpaceException;
+import hu.nye.progtech.foxandhounds.service.validator.MoveValidator;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +29,16 @@ public class Move {
 
         if (!moveValidator.isValidCoordinate(moveTo)) {
             printWrapper.printLine("Out of map");
-            throw new RuntimeException("Out of map");
+            throw new InvalidCoordinateException("Out of map");
         }
         if (!moveValidator.isValidMove(moveTo, foxLocation)) {
             printWrapper.printLine("Invalid move");
-            throw new RuntimeException("Invalid move");
+            throw new InvalidMoveException("Invalid move");
         }
 
         if (!moveValidator.isFree(currentMap, moveTo)) {
             printWrapper.printLine("Space is occupied");
-            throw new RuntimeException("Space is occupied");
+            throw new OccupiedSpaceException("Space is occupied");
         }
 
         int moveToRow = Character.getNumericValue(moveTo.charAt(0));

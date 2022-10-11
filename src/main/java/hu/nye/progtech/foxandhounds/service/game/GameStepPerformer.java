@@ -1,5 +1,6 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.game;
 
+import hu.nye.progtech.foxandhounds.service.command.CommandHandler;
 import hu.nye.progtech.foxandhounds.service.input.InputReader;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ public class GameStepPerformer {
     }
 
     public void performGameStep() {
-        printWrapper.printLine("\nEnter a command: ");
+        printWrapper.print("\nEnter a command: ");
         String input = inputReader.readInput();
         try {
             commandHandler.handleCommand(input);
