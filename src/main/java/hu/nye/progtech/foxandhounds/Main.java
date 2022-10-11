@@ -24,7 +24,7 @@ public class Main {
         Move move = new Move();
         CommandHandler commandHandler = new CommandHandler(mapPrinter, move, gameState);
         GameStepPerformer gameStepPerformer = new GameStepPerformer(inputReader, commandHandler);
-        GameController gameController = new GameController(gameState, mapVO, gameStepPerformer);
+        GameController gameController = new GameController(gameState, gameStepPerformer);
 
         gameController.playGame();
     }

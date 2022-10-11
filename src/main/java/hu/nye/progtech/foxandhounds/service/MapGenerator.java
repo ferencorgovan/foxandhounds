@@ -1,13 +1,20 @@
 package hu.nye.progtech.foxandhounds.service;
 
+import java.util.PrimitiveIterator;
 import java.util.Random;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MapGenerator {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapGenerator.class);
+
     public MapVO generateMap(int mapLength) {
+
+        LOGGER.info("Generating map");
         char[][] map = new char[mapLength][mapLength];
         for (int i = 0; i < mapLength; i++) {
             for (int j = 0; j < mapLength; j++) {
