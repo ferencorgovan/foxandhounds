@@ -75,6 +75,7 @@
                         <exclude>hu/nye/progtech/foxandhounds/model/*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/Main.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/ui/PrintWrapper.*</exclude>
+                        <exclude>hu/nye/progtech/foxandhounds/**/*Exception.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

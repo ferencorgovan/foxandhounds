@@ -60,9 +60,13 @@ public class CommandHandler {
                 break;
 
             case "move":
-                if (!Pattern.matches(MOVE_COMMAND_REGEX, input)) {
-                    printWrapper.printLine("Invalid move");
-                    throw new InvalidMoveException("Invalid move!");
+                try {
+                    if (!Pattern.matches(MOVE_COMMAND_REGEX, input)) {
+                            printWrapper.printLine("Invalid move");
+                            throw new InvalidMoveException("Invalid move!");
+                    }
+                } catch (RuntimeException e) {
+                    LOGGER.error(e.getMessage());
                 }
 
                 String coordinate = input.split(" ")[1];

@@ -1,8 +1,7 @@
 package hu.nye.progtech.foxandhounds.service.map;
 
-import java.util.Random;
-
 import hu.nye.progtech.foxandhounds.model.MapVO;
+import hu.nye.progtech.foxandhounds.service.NumberGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +10,13 @@ import org.slf4j.LoggerFactory;
  */
 public class MapGenerator {
 
+    private final NumberGenerator numberGenerator;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MapGenerator.class);
+
+    public MapGenerator(NumberGenerator numberGenerator) {
+        this.numberGenerator = numberGenerator;
+    }
 
     /**
      * Generates game map.
@@ -29,20 +34,19 @@ public class MapGenerator {
             }
         }
 
-        Random random = new Random();
-        int foxIndex = random.nextInt(mapLength / 2);
+        int foxIndex = numberGenerator.makeRandom(mapLength / 2);
         map[mapLength - 1][foxIndex * 2] = 'F';
 
-        String[] houndsStart = new String[4];
-        houndsStart[0] = "01";
-        houndsStart[1] = "03";
-        houndsStart[2] = "05";
-        houndsStart[3] = "07";
-        String foxStart = "7" + String.valueOf(foxIndex * 2);
+        String[] houndsStart = new String[mapLength / 2];
+
+        for (int i = 0; i < mapLength / 2; i++) {
+            houndsStart[i] = "0" + (i + 1);
+        }
+
+        String foxStart = mapLength - 1 + String.valueOf(foxIndex * 2);
         for (int i = 0; i < mapLength / 2; i++) {
             map[0][i * 2 + 1] = 'H';
         }
         return new MapVO(mapLength, map, foxStart, houndsStart);
     }
-
 }

@@ -2,13 +2,18 @@ package hu.nye.progtech.foxandhounds.service.validator;
 
 import java.util.regex.Pattern;
 
+import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 
 /**
  * Validates components of player of enemy move actions.
  */
 public class MoveValidator {
-    private static final String COORDINATE_REGEX = "^[0-7][0-7]$";
+    private final GameState gameState;
+
+    public MoveValidator(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     /**
      * Validates a map coordinate. It should not be out of map bounds.
@@ -17,7 +22,9 @@ public class MoveValidator {
      * @return {@code true} if the coordinate is valid, {@code false} otherwise
      */
     public Boolean isValidCoordinate(String coordinate) {
-        return Pattern.matches(COORDINATE_REGEX, coordinate);
+        int mapBound = gameState.getCurrentMap().getMapLength() - 1;
+        String coordinateRegex = "^[0-" + mapBound + "][0-" + mapBound + "]$";
+        return Pattern.matches(coordinateRegex, coordinate);
     }
 
     /**

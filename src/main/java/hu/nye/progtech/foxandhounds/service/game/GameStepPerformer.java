@@ -27,10 +27,6 @@ public class GameStepPerformer {
     public void performGameStep() {
         printWrapper.print("\nEnter a command: ");
         String input = inputReader.readInput();
-        try {
             commandHandler.handleCommand(input);
-        } catch (RuntimeException e) {
-            LOGGER.error(e.getMessage());
-        }
     }
 }
