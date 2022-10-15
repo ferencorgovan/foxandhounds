@@ -77,8 +77,8 @@ public class CommandHandler {
                         printWrapper.printLine("\n" + gameState.getPlayer().getName() + " wins.");
                         break;
                     }
-                    move.enemyMove(gameState);
                     printWrapper.printLine("Enemy's turn: ");
+                    move.enemyMove(gameState);
                     mapPrinter.printMap(gameState.getCurrentMap());
                 } catch (RuntimeException e) {
                     LOGGER.error(e.getMessage());

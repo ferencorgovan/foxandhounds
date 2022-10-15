@@ -40,7 +40,7 @@ public class MapGenerator {
         String[] houndsStart = new String[mapLength / 2];
 
         for (int i = 0; i < mapLength / 2; i++) {
-            houndsStart[i] = "0" + (i + 1);
+            houndsStart[i] = "0" + (i*2+1);
         }
 
         String foxStart = mapLength - 1 + String.valueOf(foxIndex * 2);
