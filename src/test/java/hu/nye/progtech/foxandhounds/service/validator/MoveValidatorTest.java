@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidCoordinateException;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
+import hu.nye.progtech.foxandhounds.service.exception.OccupiedSpaceException;
+import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,12 +36,15 @@ class MoveValidatorTest {
     @Mock
     private GameState gameState;
 
+    @Mock
+    private PrintWrapper printWrapper;
+
     private MoveValidator underTest;
 
     @BeforeEach
     public void setUp() {
         gameState = new GameState(MAP_VO, false, null);
-        underTest = new MoveValidator(gameState);
+        underTest = new MoveValidator(gameState, printWrapper);
     }
 
     @Test
@@ -92,5 +99,41 @@ class MoveValidatorTest {
 
         // then
         assertFalse(result);
+    }
+
+    @Test
+    public void testValidateCoordinateShouldThrowInvalidCoordinateExceptionIfGivenCoordinateIsInvalid() {
+        // when - then
+        assertThrows(InvalidCoordinateException.class, () -> underTest.validateCoordinate(INVALID_COORDINATE));
+    }
+
+    @Test
+    public void testValidateMoveShouldThrowInvalidMoveExceptionIfGivenMoveIsInvalid() {
+        // when - then
+        assertThrows(InvalidMoveException.class, () -> underTest.validateMove(INVALID_DESTINATION_COORDINATE, FOX_LOCATION));
+    }
+
+    @Test
+    public void testValidateFreeSpaceShouldThrowOccupiedSpaceExceptionIfGivenCoordinateSpaceIsNotFree() {
+        // when - then
+        assertThrows(OccupiedSpaceException.class, () -> underTest.validateFreeSpace(MAP_VO, OCCUPIED_SPACE));
+    }
+    @Test
+    public void testValidateCoordinateShouldNotThrowInvalidCoordinateExceptionIfGivenCoordinateIsValid() {
+        // when - then
+        underTest.validateCoordinate(VAlID_COORDINATE);
+    }
+
+    @Test
+    public void testValidateMoveShouldNotThrowInvalidMoveExceptionIfGivenMoveIsValid() {
+        // when - then
+        underTest.validateMove(VALID_DESTINATION_COORDINATE, FOX_LOCATION);
+    }
+
+    @Test
+    public void testValidateFreeSpaceShouldNotThrowOccupiedSpaceExceptionIfGivenCoordinateSpaceIsFree() {
+        // when - then
+        underTest.validateFreeSpace(MAP_VO, VALID_DESTINATION_COORDINATE);
+
     }
 }

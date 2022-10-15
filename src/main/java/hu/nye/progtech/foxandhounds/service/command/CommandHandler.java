@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
@@ -26,7 +27,8 @@ public class CommandHandler {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
-    private static final String MOVE_COMMAND_REGEX = "^move [0-7][0-7]$";
+    private static final String MOVE_COMMAND_REGEX = "^move [0-9][0-9]$";
+    private static final String NAME_COMMAND_REGEX = "^name .*$";
 
     /**
      * Handles an input command.
@@ -38,14 +40,14 @@ public class CommandHandler {
 
         switch (command) {
             case "name":
-                try {
-                    String name = input.split(" ")[1];
-                    gameState.getPlayer().setName(name);
-                    LOGGER.info("Changing player name");
-                    printWrapper.printLine("Player name changed to " + name);
-                } catch (RuntimeException e) {
-                    LOGGER.error("Invalid name!");
+                if (!Pattern.matches(NAME_COMMAND_REGEX, input) || input.split(" ").length == 1) {
+                    printWrapper.printLine("Invalid name command");
+                    throw new InvalidNameException("Invalid name command");
                 }
+                String name = input.split(" ")[1];
+                gameState.getPlayer().setName(name);
+                LOGGER.info("Changing player name");
+                printWrapper.printLine("Player name changed to " + name);
                 break;
 
             case "help":
@@ -60,29 +62,18 @@ public class CommandHandler {
                 break;
 
             case "move":
-                try {
-                    if (!Pattern.matches(MOVE_COMMAND_REGEX, input)) {
-                            printWrapper.printLine("Invalid move");
-                            throw new InvalidMoveException("Invalid move!");
-                    }
-                } catch (RuntimeException e) {
-                    LOGGER.error(e.getMessage());
+                if (!Pattern.matches(MOVE_COMMAND_REGEX, input)) {
+                    printWrapper.printLine("Invalid move");
+                    throw new InvalidMoveException("Invalid move!");
                 }
 
                 String coordinate = input.split(" ")[1];
-                try {
-                    move.foxMove(gameState, coordinate);
-                    mapPrinter.printMap(gameState.getCurrentMap());
-                    if (gameState.isGameOver()) {
-                        printWrapper.printLine("\n" + gameState.getPlayer().getName() + " wins.");
-                        break;
-                    }
-                    printWrapper.printLine("Enemy's turn: ");
-                    move.enemyMove(gameState);
-                    mapPrinter.printMap(gameState.getCurrentMap());
-                } catch (RuntimeException e) {
-                    LOGGER.error(e.getMessage());
+                move.foxMove(gameState, coordinate);
+                if (gameState.isGameOver()) {
+                    printWrapper.printLine("\n" + gameState.getPlayer().getName() + " wins.");
+                    break;
                 }
+                move.enemyMove(gameState);
                 break;
 
             case "exit":

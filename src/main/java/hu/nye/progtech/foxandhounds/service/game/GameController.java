@@ -27,7 +27,11 @@ public class GameController {
         LOGGER.info("Starting game");
         printWrapper.printLine("\nGame started! Type 'help' for commands.");
         while (!gameState.isGameOver()) {
-            gameStepPerformer.performGameStep();
+            try {
+                gameStepPerformer.performGameStep();
+            } catch (RuntimeException e) {
+                LOGGER.error(e.getMessage());
+            }
         }
     }
 }

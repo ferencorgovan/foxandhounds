@@ -1,7 +1,7 @@
 package hu.nye.progtech.foxandhounds.service.map;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.service.NumberGenerator;
+import hu.nye.progtech.foxandhounds.service.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
  */
 public class MapGenerator {
 
-    private final NumberGenerator numberGenerator;
+    private final RandomGenerator randomGenerator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapGenerator.class);
 
-    public MapGenerator(NumberGenerator numberGenerator) {
-        this.numberGenerator = numberGenerator;
+    public MapGenerator(RandomGenerator randomGenerator) {
+        this.randomGenerator = randomGenerator;
     }
 
     /**
@@ -34,13 +34,13 @@ public class MapGenerator {
             }
         }
 
-        int foxIndex = numberGenerator.makeRandom(mapLength / 2);
+        int foxIndex = randomGenerator.makeRandomNumber(mapLength / 2);
         map[mapLength - 1][foxIndex * 2] = 'F';
 
         String[] houndsStart = new String[mapLength / 2];
 
         for (int i = 0; i < mapLength / 2; i++) {
-            houndsStart[i] = "0" + (i*2+1);
+            houndsStart[i] = "0" + (i * 2 + 1);
         }
 
         String foxStart = mapLength - 1 + String.valueOf(foxIndex * 2);

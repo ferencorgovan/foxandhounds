@@ -2,21 +2,19 @@ package hu.nye.progtech.foxandhounds.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 import hu.nye.progtech.foxandhounds.model.Player;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
+import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class})
@@ -52,9 +50,17 @@ class CommandHandlerTest {
     private CommandHandler underTest;
 
     private static final String VALID_NAME_INPUT = "name Player";
-    private static final String EXPECTED_NAME = "Player";
     private static final String INVALID_NAME_INPUT = "name";
+    private static final String EXPECTED_NAME = "Player";
 
+    private static final String INVALID_MOVE_COMMAND = "move --";
+    private static final String VALID_MOVE_COMMAND = "move 21";
+    private static final String VALID_COORDINATE = "21";
+    private static final String HELP_COMMAND = "help";
+    private static final String PRINT_COMMAND = "print";
+    private static final String EXIT_COMMAND = "exit";
+    private static final String UNKNOWN_COMMAND = "anything";
+    private static final String DEFAULT_COMMAND = "Unknown command";
 
     @BeforeEach
     public void setUp() {
@@ -64,7 +70,7 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandShouldPrintHelpWhenInputIsHelpCommand() {
         // when
-        underTest.handleCommand("help");
+        underTest.handleCommand(HELP_COMMAND);
 
         // then
         verify(printWrapper).printLine(anyString());
@@ -73,7 +79,7 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandShouldCallPrintMapMethodWhenInputIsPrintCommand() {
         // when
-        underTest.handleCommand("print");
+        underTest.handleCommand(PRINT_COMMAND);
 
         // then
         verify(mapPrinter).printMap(gameState.getCurrentMap());
@@ -82,7 +88,7 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandSetGameOverWhenInputIsExitCommand() {
         // when
-        underTest.handleCommand("exit");
+        underTest.handleCommand(EXIT_COMMAND);
 
         // then
         verify(printWrapper).printLine(anyString());
@@ -92,10 +98,10 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandShouldPrintDefaultMessageWhenInputIsDefaultCommand() {
         // when
-        underTest.handleCommand("anything");
+        underTest.handleCommand(UNKNOWN_COMMAND);
 
         // then
-        verify(printWrapper).printLine("Unknown command");
+        verify(printWrapper).printLine(DEFAULT_COMMAND);
     }
 
     @Test
@@ -103,6 +109,7 @@ class CommandHandlerTest {
         // given
         gameState = new GameState(MAP_VO, false, player);
         underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+
         // when
         underTest.handleCommand(VALID_NAME_INPUT);
 
@@ -117,22 +124,35 @@ class CommandHandlerTest {
         underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
 
         // when
-        underTest.handleCommand("move 21");
+        underTest.handleCommand(VALID_MOVE_COMMAND);
 
         // then
-        verify(move).foxMove(gameState, "21");
-        verify(mapPrinter, times(2)).printMap(gameState.getCurrentMap());
+        verify(move).foxMove(gameState, VALID_COORDINATE);
         verify(move).enemyMove(gameState);
     }
 
-    /*
     @Test
     public void testHandleCommandShouldThrowExceptionWhenInputIsInvalidMoveCommand() {
-        // given
-        doThrow(InvalidMoveException.class).when(underTest).handleCommand("move --");
-
         // when - then
-        assertThrows(InvalidMoveException.class, () -> underTest.handleCommand("move --"));
+        assertThrows(InvalidMoveException.class, () -> underTest.handleCommand(INVALID_MOVE_COMMAND));
     }
-    */
+
+    @Test
+    public void testHandleCommandShouldThrowExceptionWhenInputIsInvalidNameCommand() {
+        // when - then
+        assertThrows(InvalidNameException.class, () -> underTest.handleCommand(INVALID_NAME_INPUT));
+    }
+
+    @Test
+    public void testHandleCommandShouldExitGameWhenPlayerWins() {
+        // given
+        gameState = new GameState(null, true, player);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+
+        // when
+        underTest.handleCommand(VALID_MOVE_COMMAND);
+
+        // then
+        verify(printWrapper).printLine(anyString());
+    }
 }

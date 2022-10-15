@@ -1,10 +1,11 @@
 package hu.nye.progtech.foxandhounds.service.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.service.NumberGenerator;
+import hu.nye.progtech.foxandhounds.service.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ public class MapGeneratorTest {
     private static final int MAP_LENGTH = 4;
 
     @Mock
-    private NumberGenerator numberGenerator;
+    private RandomGenerator numberGenerator;
 
     private static final char[][] EXPECTED_MAP = {
             {'*', 'H', '*', 'H'},
@@ -40,8 +41,10 @@ public class MapGeneratorTest {
 
     @Test
     public void testGenerateMapShouldReturnCorrectMap() {
+        // given
+        given(numberGenerator.makeRandomNumber(RANDOM_BOUND)).willReturn(0);
+
         // when
-        when(numberGenerator.makeRandom(RANDOM_BOUND)).thenReturn(0);
         MapVO result = underTest.generateMap(MAP_LENGTH);
 
         // then

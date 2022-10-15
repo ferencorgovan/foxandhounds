@@ -1,17 +1,15 @@
 package hu.nye.progtech.foxandhounds.service.game;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.model.Player;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,17 +28,32 @@ class GameControllerTest {
 
     private GameController underTest;
 
-    @Test
-    public void testPlayGameShouldLoopGameUntilUserDoesNotExit() {
-        // given
-        gameState = new GameState(null, true, null);
+    @BeforeEach
+    public void setUp() {
         underTest = new GameController(gameState, gameStepPerformer, printWrapper);
+    }
+
+    @Test
+    public void testPlayGameShouldStopLoopWhenGameEnds() {
+        // given
+        given(gameState.isGameOver()).willReturn(true);
 
         // when
         underTest.playGame();
 
         // then
-        verifyNoInteractions(gameStepPerformer);
+        verifyNoMoreInteractions(gameStepPerformer);
+    }
+
+    @Test
+    public void testGameShouldContinueLoopWhenGameStepPerformerThrowsException() throws RuntimeException {
+        // given
+        doThrow(RuntimeException.class).when(gameStepPerformer).performGameStep();
+
+        // when - then
+        assertThrows(RuntimeException.class, () -> gameStepPerformer.performGameStep());
+
+        verify(gameStepPerformer).performGameStep();
     }
 
     /*
