@@ -53,7 +53,7 @@ public class CommandHandler {
             case "help":
                 printWrapper.printLine("\nUsable commands: \n- 'name' : Change player name\n" +
                         "- 'print' : Print current state of map\n" +
-                        "- 'move [RowIndexColumnIndex]' : Move fox (E.g. 'move 61') \n" +
+                        "- 'move [RowIndex][ColumnIndex]' : Move fox (E.g. 'move 61') \n" +
                         "- 'exit' : End the game");
                 break;
 
