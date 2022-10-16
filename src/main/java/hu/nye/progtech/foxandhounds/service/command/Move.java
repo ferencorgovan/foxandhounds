@@ -2,7 +2,7 @@ package hu.nye.progtech.foxandhounds.service.command;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.service.RandomGenerator;
+import hu.nye.progtech.foxandhounds.service.map.RandomGenerator;
 import hu.nye.progtech.foxandhounds.service.validator.MoveValidator;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;

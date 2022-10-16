@@ -56,19 +56,16 @@ class GameControllerTest {
         verify(gameStepPerformer).performGameStep();
     }
 
-    /*
     @Test
-    public void testPlayGameShouldLoopGameUntilThePlayerDoesNotWin() {
+    public void testGameShouldContinueLoopUntilGameEnds() {
         // given
-        gameState = new GameState(MAP_VO, false, null);
-        underTest = new GameController(gameState, gameStepPerformer, printWrapper);
+        given(gameState.isGameOver()).willReturn(false, true);
 
         // when
         underTest.playGame();
 
-
         // then
+        verify(gameState, times(2)).isGameOver();
         verify(gameStepPerformer).performGameStep();
     }
-    */
 }

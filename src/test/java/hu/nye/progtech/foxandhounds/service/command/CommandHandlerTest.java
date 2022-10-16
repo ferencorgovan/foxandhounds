@@ -1,6 +1,7 @@
 package hu.nye.progtech.foxandhounds.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -61,6 +62,7 @@ class CommandHandlerTest {
     private static final String EXIT_COMMAND = "exit";
     private static final String UNKNOWN_COMMAND = "anything";
     private static final String DEFAULT_COMMAND = "Unknown command";
+    private static final String EXIT_PROMPT = "Exiting game";
 
     @BeforeEach
     public void setUp() {
@@ -91,7 +93,7 @@ class CommandHandlerTest {
         underTest.handleCommand(EXIT_COMMAND);
 
         // then
-        verify(printWrapper).printLine(anyString());
+        verify(printWrapper).printLine(EXIT_PROMPT);
         verify(gameState).setGameOver(true);
     }
 
@@ -153,6 +155,6 @@ class CommandHandlerTest {
         underTest.handleCommand(VALID_MOVE_COMMAND);
 
         // then
-        verify(printWrapper).printLine(anyString());
+        verify(printWrapper).printLine("\n" + gameState.getPlayer().getName() + " wins.");
     }
 }

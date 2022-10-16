@@ -2,10 +2,8 @@ package hu.nye.progtech.foxandhounds.service.map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.service.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

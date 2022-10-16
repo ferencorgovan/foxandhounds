@@ -1,11 +1,10 @@
-package hu.nye.progtech.foxandhounds.service;
+package hu.nye.progtech.foxandhounds.service.map;
 
+import hu.nye.progtech.foxandhounds.service.map.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.BDDMockito.given;
 
 class RandomGeneratorTest {
 

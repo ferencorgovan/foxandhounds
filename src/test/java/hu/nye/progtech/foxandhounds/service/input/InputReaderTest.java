@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doThrow;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import hu.nye.progtech.foxandhounds.service.input.InputReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

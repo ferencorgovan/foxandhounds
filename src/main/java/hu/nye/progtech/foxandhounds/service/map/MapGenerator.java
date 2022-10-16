@@ -1,7 +1,6 @@
 package hu.nye.progtech.foxandhounds.service.map;
 
 import hu.nye.progtech.foxandhounds.model.MapVO;
-import hu.nye.progtech.foxandhounds.service.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
