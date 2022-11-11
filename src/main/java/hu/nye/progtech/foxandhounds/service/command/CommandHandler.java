@@ -27,7 +27,7 @@ public class CommandHandler {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
-    private static final String MOVE_COMMAND_REGEX = "^move [0-9][0-9]$";
+    private static final String MOVE_COMMAND_REGEX = "^move \\d\\d$"; // = [0-9][0-9]
     private static final String NAME_COMMAND_REGEX = "^name .*$";
 
     /**
