@@ -10,7 +10,7 @@ import hu.nye.progtech.foxandhounds.service.exception.OccupiedSpaceException;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 
 /**
- * Validates components of player of enemy move actions.
+ * Validates components of player or enemy move actions.
  */
 public class MoveValidator {
     private final GameState gameState;
