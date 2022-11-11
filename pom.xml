@@ -15,9 +15,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.3</version>
+            <version>1.4.4</version>
         </dependency>
 
         <dependency>
@@ -75,6 +81,7 @@
                         <exclude>hu/nye/progtech/foxandhounds/model/*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/Main.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/ui/PrintWrapper.*</exclude>
+                        <exclude>hu/nye/progtech/foxandhounds/**/*Configuration.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/**/*Exception.*</exclude>
                     </excludes>
                 </configuration>
