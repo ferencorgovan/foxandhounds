@@ -1,8 +1,11 @@
 package hu.nye.progtech.foxandhounds.service.command;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
+import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
@@ -18,12 +21,15 @@ public class CommandHandler {
     private final Move move;
     private final GameState gameState;
     private final PrintWrapper printWrapper;
+    private final JdbcGameSavesRepository jdbcGameSavesRepository;
 
-    public CommandHandler(MapPrinter mapPrinter, Move move, GameState gameState, PrintWrapper printWrapper) {
+    public CommandHandler(MapPrinter mapPrinter, Move move, GameState gameState,
+                          PrintWrapper printWrapper, JdbcGameSavesRepository jdbcGameSavesRepository) {
         this.mapPrinter = mapPrinter;
         this.move = move;
         this.gameState = gameState;
         this.printWrapper = printWrapper;
+        this.jdbcGameSavesRepository = jdbcGameSavesRepository;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
@@ -71,10 +77,20 @@ public class CommandHandler {
                 move.foxMove(gameState, coordinate);
                 if (gameState.isGameOver()) {
                     printWrapper.printLine("\n" + gameState.getPlayer().getName() + " wins.");
+                    jdbcGameSavesRepository.saveHighScore(gameState.getPlayer());
                     break;
                 }
                 move.enemyMove(gameState);
                 break;
+
+            case "hs":
+                List<String> highScoreList = jdbcGameSavesRepository.loadHighScores();
+                for (String item:
+                     highScoreList) {
+                    System.out.println(item);
+                }
+                break;
+
 
             case "exit":
                 LOGGER.info("Exiting game");

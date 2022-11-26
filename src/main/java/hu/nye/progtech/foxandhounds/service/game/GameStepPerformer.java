@@ -24,6 +24,6 @@ public class GameStepPerformer {
     public void performGameStep() {
         printWrapper.print("\nEnter a command: ");
         String input = inputReader.readInput();
-            commandHandler.handleCommand(input);
+        commandHandler.handleCommand(input);
     }
 }

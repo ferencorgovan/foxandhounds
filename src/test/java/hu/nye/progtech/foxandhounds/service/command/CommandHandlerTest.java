@@ -1,13 +1,13 @@
 package hu.nye.progtech.foxandhounds.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 import hu.nye.progtech.foxandhounds.model.Player;
+import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
@@ -46,6 +46,8 @@ class CommandHandlerTest {
     private PrintWrapper printWrapper;
 
     @Mock
+    private JdbcGameSavesRepository jdbcGameSavesRepository;
+    @Mock
     private Player player = new Player(EXPECTED_NAME);
 
     private CommandHandler underTest;
@@ -66,7 +68,7 @@ class CommandHandlerTest {
 
     @BeforeEach
     public void setUp() {
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
     }
 
     @Test
@@ -110,7 +112,7 @@ class CommandHandlerTest {
     public void testHandleCommandShouldSetNameWhenInputIsNameCommand() {
         // given
         gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_NAME_INPUT);
@@ -123,7 +125,7 @@ class CommandHandlerTest {
     public void testHandleCommandShouldCallMoveMethodsWhenInputIsMoveCommand() {
         // given
         gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);
@@ -149,7 +151,7 @@ class CommandHandlerTest {
     public void testHandleCommandShouldExitGameWhenPlayerWins() {
         // given
         gameState = new GameState(null, true, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);
