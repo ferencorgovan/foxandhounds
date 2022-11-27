@@ -30,7 +30,7 @@ public class Move {
      * Performs a player turn.
      *
      * @param gameState Current state of the game
-     * @param moveTo Coordinate of move destination
+     * @param moveTo    Coordinate of move destination
      * @throws RuntimeException if the move is invalid
      */
     public void foxMove(GameState gameState, String moveTo) throws RuntimeException {
@@ -95,16 +95,12 @@ public class Move {
         hounds[selectedHound] = houndRow + houndColumn;
         String foxLocation = gameState.getCurrentMap().getFoxStart();
 
-        /*
-        int foxRow = Character.getNumericValue(foxLocation.charAt(0));
-        int foxColumn = Character.getNumericValue(foxLocation.charAt(1));
-        if (map[foxRow-1][foxColumn-1] == 'H' && map[foxRow-1][foxColumn+1] == 'H' &&
-        map[foxRow+1][foxColumn-1] == 'H' && map[foxRow+1][foxColumn+1] == 'H') {
+        gameState.setCurrentMap(new MapVO(currentMap.getMapLength(), map, foxLocation, hounds));
+        mapPrinter.printMap(gameState.getCurrentMap());
+
+        if (!moveValidator.canMove(foxLocation)) {
             gameState.setGameOver(true);
             System.out.println("Hounds win.");
         }
-        */
-        gameState.setCurrentMap(new MapVO(currentMap.getMapLength(), map, foxLocation, hounds));
-        mapPrinter.printMap(gameState.getCurrentMap());
     }
 }

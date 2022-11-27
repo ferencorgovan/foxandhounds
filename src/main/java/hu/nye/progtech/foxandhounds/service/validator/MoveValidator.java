@@ -1,5 +1,7 @@
 package hu.nye.progtech.foxandhounds.service.validator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
@@ -36,7 +38,7 @@ public class MoveValidator {
     /**
      * Validates a game move. Throws Exception if the move is invalid.
      *
-     * @param coordinate Coordinate of move destination
+     * @param coordinate  Coordinate of move destination
      * @param foxLocation Coordinate of fox position
      */
     public void validateMove(String coordinate, String foxLocation) {
@@ -74,7 +76,7 @@ public class MoveValidator {
     /**
      * Validates a game move. It should be one space apart diagonally.
      *
-     * @param coordinate Coordinate of move destination
+     * @param coordinate  Coordinate of move destination
      * @param foxLocation Coordinate of fox position
      * @return {@code true} if the move is valid, {@code false} otherwise
      */
@@ -90,7 +92,7 @@ public class MoveValidator {
     /**
      * Determines if the map space is free.
      *
-     * @param mapVO Current game map
+     * @param mapVO      Current game map
      * @param coordinate Coordinate of move destination
      * @return {@code true} if the map space is free, {@code false} otherwise
      */
@@ -103,4 +105,36 @@ public class MoveValidator {
         }
         return result;
     }
+
+    /**
+     * Determines if the fox can still move on the map.
+     *
+     * @param foxLocation Coordinate of fox position
+     * @return {@code true} if the fox can move, {@code false} otherwise
+     */
+    public Boolean canMove(String foxLocation) {
+        char[][] map = gameState.getCurrentMap().getMap();
+        List<String> foxNeighbors = foxNeighbors(foxLocation);
+        MapVO mapVO = gameState.getCurrentMap();
+
+        return (isValidCoordinate(foxNeighbors.get(0)) && isFree(mapVO, foxNeighbors.get(0))) ||
+                (isValidCoordinate(foxNeighbors.get(1)) && isFree(mapVO, foxNeighbors.get(1))) ||
+                (isValidCoordinate(foxNeighbors.get(2)) && isFree(mapVO, foxNeighbors.get(2))) ||
+                (isValidCoordinate(foxNeighbors.get(3)) && isFree(mapVO, foxNeighbors.get(3)));
+    }
+
+    private List<String> foxNeighbors(String foxLocation) {
+        int foxRow = Character.getNumericValue(foxLocation.charAt(0));
+        int foxColumn = Character.getNumericValue(foxLocation.charAt(1));
+
+        List<String> neighbors = new ArrayList<>();
+        neighbors.add(foxRow - 1 + "" + (foxColumn - 1));
+        neighbors.add(foxRow - 1 + "" + (foxColumn + 1));
+        neighbors.add(foxRow + 1 + "" + (foxColumn - 1));
+        neighbors.add(foxRow + 1 + "" + (foxColumn + 1));
+
+        return neighbors;
+    }
+
+
 }

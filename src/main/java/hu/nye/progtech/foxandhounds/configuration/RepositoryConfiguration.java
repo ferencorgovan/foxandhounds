@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
+import hu.nye.progtech.foxandhounds.persistence.JdbcHighScoresRepository;
+import hu.nye.progtech.foxandhounds.persistence.XmlGameSavesRepository;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,7 +23,12 @@ public class RepositoryConfiguration {
     }
 
     @Bean(destroyMethod = "close")
-    JdbcGameSavesRepository jdbcGameSavesRepository(Connection connection) {
-        return new JdbcGameSavesRepository(connection);
+    JdbcHighScoresRepository jdbcHighScoresRepository(Connection connection) {
+        return new JdbcHighScoresRepository(connection);
+    }
+
+    @Bean
+    XmlGameSavesRepository xmlGameSavesRepository(Marshaller marshaller, Unmarshaller unmarshaller) {
+        return new XmlGameSavesRepository(marshaller, unmarshaller);
     }
 }

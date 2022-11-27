@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
-import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
+import hu.nye.progtech.foxandhounds.persistence.JdbcHighScoresRepository;
+import hu.nye.progtech.foxandhounds.persistence.XmlGameSavesRepository;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
@@ -21,15 +22,19 @@ public class CommandHandler {
     private final Move move;
     private final GameState gameState;
     private final PrintWrapper printWrapper;
-    private final JdbcGameSavesRepository jdbcGameSavesRepository;
+    private final JdbcHighScoresRepository jdbcHighScoresRepository;
+    private final XmlGameSavesRepository xmlGameSavesRepository;
+
 
     public CommandHandler(MapPrinter mapPrinter, Move move, GameState gameState,
-                          PrintWrapper printWrapper, JdbcGameSavesRepository jdbcGameSavesRepository) {
+                          PrintWrapper printWrapper, JdbcHighScoresRepository jdbcHighScoresRepository,
+                          XmlGameSavesRepository xmlGameSavesRepository) {
         this.mapPrinter = mapPrinter;
         this.move = move;
         this.gameState = gameState;
         this.printWrapper = printWrapper;
-        this.jdbcGameSavesRepository = jdbcGameSavesRepository;
+        this.jdbcHighScoresRepository = jdbcHighScoresRepository;
+        this.xmlGameSavesRepository = xmlGameSavesRepository;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
@@ -77,21 +82,28 @@ public class CommandHandler {
                 move.foxMove(gameState, coordinate);
                 if (gameState.isGameOver()) {
                     printWrapper.printLine("\n" + gameState.getPlayer().getName() + " wins.");
-                    jdbcGameSavesRepository.saveHighScore(gameState.getPlayer());
+                    jdbcHighScoresRepository.saveHighScore(gameState.getPlayer());
                     break;
                 }
                 move.enemyMove(gameState);
                 break;
 
             case "hs":
-                List<String> highScoreList = jdbcGameSavesRepository.loadHighScores();
-                System.out.println("NAME\t\tWINS");
+                List<String> highScoreList = jdbcHighScoresRepository.loadHighScores();
+                printWrapper.printLine("NAME\t\tWINS");
                 for (String item :
                         highScoreList) {
-                    System.out.println(item);
+                    printWrapper.printLine(item);
                 }
                 break;
 
+            case "save":
+                xmlGameSavesRepository.saveGameState(gameState.getCurrentMap());
+                break;
+
+            case "load":
+                gameState.setCurrentMap(xmlGameSavesRepository.loadGameState());
+                break;
 
             case "exit":
                 LOGGER.info("Exiting game");

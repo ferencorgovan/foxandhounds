@@ -1,26 +1,22 @@
 package hu.nye.progtech.foxandhounds.persistence;
 
 import hu.nye.progtech.foxandhounds.model.Player;
-import org.h2.jdbc.JdbcCallableStatement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class JdbcGameSavesRepositoryTest {
+public class JdbcHighScoresRepositoryTest {
 
-    private JdbcGameSavesRepository underTest;
+    private JdbcHighScoresRepository underTest;
 
     @Mock
     private Connection connection;
@@ -41,22 +37,22 @@ public class JdbcGameSavesRepositoryTest {
     private static final int WINS = 2;
     @BeforeEach
     public void setUp() {
-        underTest = new JdbcGameSavesRepository(connection);
+        underTest = new JdbcHighScoresRepository(connection);
     }
 
     @Test
     public void testSaveHighScoreShouldInsertNewPlayerAndHighScoreWhenThereIsNoException() throws SQLException {
         // given
-        when(connection.prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
-        when(connection.prepareStatement(JdbcGameSavesRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
+        when(connection.prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
+        when(connection.prepareStatement(JdbcHighScoresRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(connection.prepareStatement(JdbcGameSavesRepository.INSERT_STATEMENT)).thenReturn(preparedStatement);
+        when(connection.prepareStatement(JdbcHighScoresRepository.INSERT_STATEMENT)).thenReturn(preparedStatement);
 
         // when
         underTest.saveHighScore(player);
 
         // then
-        verify(connection).prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT);
+        verify(connection).prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT);
         verify(preparedStatement, times(3)).setString(1, player.getName());
         verify(preparedStatement, times(2)).executeQuery();
         verify(preparedStatement, times(2)).executeUpdate();
@@ -66,9 +62,9 @@ public class JdbcGameSavesRepositoryTest {
     }
 
     @Test
-    public void testSaveShouldUpdateHighScoreWhenPlayerIsInDatabaseAndThereIsNoException() throws SQLException {
-        when(connection.prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
-        when(connection.prepareStatement(JdbcGameSavesRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
+    public void testSaveHighScoreShouldUpdateHighScoreWhenPlayerIsInDatabaseAndThereIsNoException() throws SQLException {
+        when(connection.prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
+        when(connection.prepareStatement(JdbcHighScoresRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("id")).thenReturn(2);
@@ -76,7 +72,7 @@ public class JdbcGameSavesRepositoryTest {
         underTest.saveHighScore(player);
 
         // then
-        verify(connection).prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT);
+        verify(connection).prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT);
         verify(preparedStatement, times(2)).setString(1, player.getName());
         verify(preparedStatement, times(2)).executeQuery();
         verify(preparedStatement).executeUpdate();
@@ -88,7 +84,7 @@ public class JdbcGameSavesRepositoryTest {
     public void testLoadHighScoresShouldReturnHighScoreListWhenThereIsNoException() throws SQLException {
         // given
         when(connection.createStatement()).thenReturn(statement);
-        when(statement.executeQuery(JdbcGameSavesRepository.SELECT_STATEMENT)).thenReturn(resultSet);
+        when(statement.executeQuery(JdbcHighScoresRepository.SELECT_STATEMENT)).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getString("name")).thenReturn(NAME);
         when(resultSet.getInt("wins")).thenReturn(WINS);
@@ -99,7 +95,7 @@ public class JdbcGameSavesRepositoryTest {
 
         // then
         verify(connection).createStatement();
-        verify(statement).executeQuery(JdbcGameSavesRepository.SELECT_STATEMENT);
+        verify(statement).executeQuery(JdbcHighScoresRepository.SELECT_STATEMENT);
         verify(resultSet, times(2)).next();
         verify(resultSet).getString("name");
         verify(resultSet).getInt("wins");
@@ -107,6 +103,44 @@ public class JdbcGameSavesRepositoryTest {
         verify(resultSet).close();
         verifyNoMoreInteractions(connection);
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testSaveHighScoreShouldDoNothingWhenThereIsAnSQLException() throws SQLException {
+        // given
+        when(connection.prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT)).thenThrow(new SQLException());
+        // when
+        underTest.saveHighScore(player);
+
+        // then
+        verifyNoMoreInteractions(connection);
+    }
+
+    @Test
+    public void testSaveHighScoreShouldDoNothingWhenThereIsAnSQLExceptionWhileInsertingPlayer() throws SQLException {
+        // given
+        when(connection.prepareStatement(JdbcHighScoresRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
+        when(connection.prepareStatement(JdbcHighScoresRepository.SELECT_ID_STATEMENT)).thenThrow(new SQLException());
+        when(connection.prepareStatement(JdbcHighScoresRepository.INSERT_STATEMENT)).thenThrow(new SQLException());
+
+        // when
+        underTest.saveHighScore(player);
+
+        // then
+        verifyNoMoreInteractions(connection);
+    }
+
+    @Test
+    public void testLoadHighScoresShouldThrowRuntimeExceptionWhenSQLExceptionIsThrown() throws SQLException {
+        // given
+        when(connection.createStatement()).thenThrow(new SQLException());
+
+        // when
+        assertThrows(RuntimeException.class, () -> underTest.loadHighScores());
+
+        // then
+        verify(connection).createStatement();
+        verifyNoMoreInteractions(connection);
     }
 
     @Test

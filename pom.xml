@@ -98,6 +98,7 @@
                 <configuration>
                     <excludes>
                         <exclude>hu/nye/progtech/foxandhounds/model/*</exclude>
+                        <exclude>hu/nye/progtech/foxandhounds/persistence/xml/PersistableMapVO.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/Main.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/ui/PrintWrapper.*</exclude>
                         <exclude>hu/nye/progtech/foxandhounds/**/*Configuration.*</exclude>

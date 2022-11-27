@@ -7,7 +7,8 @@ import static org.mockito.Mockito.*;
 import hu.nye.progtech.foxandhounds.model.GameState;
 import hu.nye.progtech.foxandhounds.model.MapVO;
 import hu.nye.progtech.foxandhounds.model.Player;
-import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
+import hu.nye.progtech.foxandhounds.persistence.JdbcHighScoresRepository;
+import hu.nye.progtech.foxandhounds.persistence.XmlGameSavesRepository;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidMoveException;
 import hu.nye.progtech.foxandhounds.service.exception.InvalidNameException;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
@@ -46,7 +47,10 @@ class CommandHandlerTest {
     private PrintWrapper printWrapper;
 
     @Mock
-    private JdbcGameSavesRepository jdbcGameSavesRepository;
+    private JdbcHighScoresRepository jdbcHighScoresRepository;
+
+    @Mock
+    private XmlGameSavesRepository xmlGameSavesRepository;
     @Mock
     private Player player = new Player(EXPECTED_NAME);
 
@@ -64,11 +68,14 @@ class CommandHandlerTest {
     private static final String EXIT_COMMAND = "exit";
     private static final String UNKNOWN_COMMAND = "anything";
     private static final String DEFAULT_COMMAND = "Unknown command";
+    private static final String HIGH_SCORE_COMMAND = "hs";
+    private static final String SAVE_COMMAND = "save";
+    private static final String LOAD_COMMAND = "load";
     private static final String EXIT_PROMPT = "Exiting game";
 
     @BeforeEach
     public void setUp() {
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
     }
 
     @Test
@@ -112,7 +119,7 @@ class CommandHandlerTest {
     public void testHandleCommandShouldSetNameWhenInputIsNameCommand() {
         // given
         gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_NAME_INPUT);
@@ -122,10 +129,38 @@ class CommandHandlerTest {
     }
 
     @Test
+    public void testHandleCommandShouldPrintHighScoresWhenInputIsHighScoreCommand() {
+        // when
+        underTest.handleCommand(HIGH_SCORE_COMMAND);
+
+        // then
+        verify(printWrapper).printLine("NAME\t\tWINS");
+        verify(jdbcHighScoresRepository).loadHighScores();
+    }
+
+    @Test
+    public void testHandleCommandShouldSaveGameStateWhenInputIsSaveCommand() {
+        // when
+        underTest.handleCommand(SAVE_COMMAND);
+
+        // then
+        verify(xmlGameSavesRepository).saveGameState(gameState.getCurrentMap());
+    }
+
+    @Test
+    public void testHandleCommandShouldLoadGameStateWhenInputIsLoadCommand() {
+        // when
+        underTest.handleCommand(LOAD_COMMAND);
+
+        // then
+        verify(xmlGameSavesRepository).loadGameState();
+    }
+
+    @Test
     public void testHandleCommandShouldCallMoveMethodsWhenInputIsMoveCommand() {
         // given
         gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);
@@ -151,7 +186,7 @@ class CommandHandlerTest {
     public void testHandleCommandShouldExitGameWhenPlayerWins() {
         // given
         gameState = new GameState(null, true, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
+        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
 
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);

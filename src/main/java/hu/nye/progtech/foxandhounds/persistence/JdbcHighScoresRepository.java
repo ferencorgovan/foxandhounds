@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for saving Fox and Hounds high score table.
  */
-public class JdbcGameSavesRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcGameSavesRepository.class);
+public class JdbcHighScoresRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcHighScoresRepository.class);
     static final String INSERT_STATEMENT = "INSERT INTO scores (name, wins) VALUES (?, 0);";
 
     static final String SELECT_STATEMENT = "SELECT * FROM scores;";
@@ -28,7 +28,7 @@ public class JdbcGameSavesRepository {
 
     private final Connection connection;
 
-    public JdbcGameSavesRepository(Connection connection) {
+    public JdbcHighScoresRepository(Connection connection) {
         this.connection = connection;
     }
 
@@ -64,6 +64,7 @@ public class JdbcGameSavesRepository {
 
         } catch (SQLException e) {
             LOGGER.error("SQL exception occurred", e);
+            throw new RuntimeException("Failed to load high scores");
         }
         return highScoreList;
     }

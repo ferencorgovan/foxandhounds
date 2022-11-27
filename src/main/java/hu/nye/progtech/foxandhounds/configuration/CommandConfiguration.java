@@ -1,7 +1,8 @@
 package hu.nye.progtech.foxandhounds.configuration;
 
 import hu.nye.progtech.foxandhounds.model.GameState;
-import hu.nye.progtech.foxandhounds.persistence.JdbcGameSavesRepository;
+import hu.nye.progtech.foxandhounds.persistence.JdbcHighScoresRepository;
+import hu.nye.progtech.foxandhounds.persistence.XmlGameSavesRepository;
 import hu.nye.progtech.foxandhounds.service.command.CommandHandler;
 import hu.nye.progtech.foxandhounds.service.command.Move;
 import hu.nye.progtech.foxandhounds.service.map.RandomGenerator;
@@ -19,8 +20,9 @@ public class CommandConfiguration {
 
     @Bean
     CommandHandler commandHandler(MapPrinter mapPrinter, Move move, GameState gameState,
-                                  PrintWrapper printWrapper, JdbcGameSavesRepository jdbcGameSavesRepository) {
-        return new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcGameSavesRepository);
+                                  PrintWrapper printWrapper, JdbcHighScoresRepository jdbcHighScoresRepository,
+                                  XmlGameSavesRepository xmlGameSavesRepository) {
+        return new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
     }
 
     @Bean
