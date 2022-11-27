@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,13 +37,15 @@ public class JdbcGameSavesRepositoryTest {
     @Mock
     private ResultSet resultSet;
 
+    private static final String NAME = "F";
+    private static final int WINS = 2;
     @BeforeEach
     public void setUp() {
         underTest = new JdbcGameSavesRepository(connection);
     }
 
     @Test
-    void testSaveHighScoreShouldInsertNewPlayerAndHighScoreWhenThereIsNoException() throws SQLException {
+    public void testSaveHighScoreShouldInsertNewPlayerAndHighScoreWhenThereIsNoException() throws SQLException {
         // given
         when(connection.prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
         when(connection.prepareStatement(JdbcGameSavesRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
@@ -62,7 +66,7 @@ public class JdbcGameSavesRepositoryTest {
     }
 
     @Test
-    void testSaveShouldUpdateHighScoreWhenPlayerIsInDatabaseAndThereIsNoException() throws SQLException {
+    public void testSaveShouldUpdateHighScoreWhenPlayerIsInDatabaseAndThereIsNoException() throws SQLException {
         when(connection.prepareStatement(JdbcGameSavesRepository.UPDATE_STATEMENT)).thenReturn(preparedStatement);
         when(connection.prepareStatement(JdbcGameSavesRepository.SELECT_ID_STATEMENT)).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -78,6 +82,31 @@ public class JdbcGameSavesRepositoryTest {
         verify(preparedStatement).executeUpdate();
         verify(preparedStatement, times(3)).close();
         //verifyNoMoreInteractions(connection, statement, preparedStatement);
+    }
+
+    @Test
+    public void testLoadHighScoresShouldReturnHighScoreListWhenThereIsNoException() throws SQLException {
+        // given
+        when(connection.createStatement()).thenReturn(statement);
+        when(statement.executeQuery(JdbcGameSavesRepository.SELECT_STATEMENT)).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("name")).thenReturn(NAME);
+        when(resultSet.getInt("wins")).thenReturn(WINS);
+        List<String> expected = List.of(NAME + "\t\t" + WINS);
+
+        // when
+        List<String> result = underTest.loadHighScores();
+
+        // then
+        verify(connection).createStatement();
+        verify(statement).executeQuery(JdbcGameSavesRepository.SELECT_STATEMENT);
+        verify(resultSet, times(2)).next();
+        verify(resultSet).getString("name");
+        verify(resultSet).getInt("wins");
+        verify(statement).close();
+        verify(resultSet).close();
+        verifyNoMoreInteractions(connection);
+        assertEquals(expected, result);
     }
 
     @Test

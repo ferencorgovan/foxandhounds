@@ -1,12 +1,17 @@
 package hu.nye.progtech.foxandhounds.persistence;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import hu.nye.progtech.foxandhounds.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Class for saving Fox and Hounds high score table.
@@ -44,14 +49,19 @@ public class JdbcGameSavesRepository {
         }
     }
 
+    /**
+     * Loads high score table.
+     *
+     * @return List of high scores
+     */
     public List<String> loadHighScores() {
         List<String> highScoreList = new ArrayList<>();
-        highScoreList.add("NAME\t\tWINS");
         try (Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(SELECT_STATEMENT)) {
-            while(resultSet.next()) {
+             ResultSet resultSet = statement.executeQuery(SELECT_STATEMENT)) {
+            while (resultSet.next()) {
                 highScoreList.add(resultSet.getString("name") + "\t\t" + resultSet.getInt("wins"));
             }
+
         } catch (SQLException e) {
             LOGGER.error("SQL exception occurred", e);
         }

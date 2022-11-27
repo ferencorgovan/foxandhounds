@@ -1,6 +1,5 @@
 package hu.nye.progtech.foxandhounds.service.command;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -12,6 +11,7 @@ import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Class used to process input commands.
@@ -85,8 +85,9 @@ public class CommandHandler {
 
             case "hs":
                 List<String> highScoreList = jdbcGameSavesRepository.loadHighScores();
-                for (String item:
-                     highScoreList) {
+                System.out.println("NAME\t\tWINS");
+                for (String item :
+                        highScoreList) {
                     System.out.println(item);
                 }
                 break;

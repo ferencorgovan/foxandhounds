@@ -1,7 +1,5 @@
 package hu.nye.progtech.foxandhounds;
 
-import java.sql.SQLException;
-
 import hu.nye.progtech.foxandhounds.service.game.GameController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
