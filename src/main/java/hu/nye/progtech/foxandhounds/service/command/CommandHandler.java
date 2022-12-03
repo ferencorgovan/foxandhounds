@@ -61,13 +61,6 @@ public class CommandHandler {
                 printWrapper.printLine("Player name changed to " + name);
                 break;
 
-            case "help":
-                printWrapper.printLine("\nUsable commands: \n- 'name' : Change player name\n" +
-                        "- 'print' : Print current state of map\n" +
-                        "- 'move [RowIndex][ColumnIndex]' : Move fox (E.g. 'move 61') \n" +
-                        "- 'exit' : End the game");
-                break;
-
             case "print":
                 mapPrinter.printMap(gameState.getCurrentMap());
                 break;
@@ -99,10 +92,14 @@ public class CommandHandler {
 
             case "save":
                 xmlGameSavesRepository.saveGameState(gameState.getCurrentMap());
+                LOGGER.info("Saving game state");
+                printWrapper.printLine("Game state saved");
                 break;
 
             case "load":
                 gameState.setCurrentMap(xmlGameSavesRepository.loadGameState());
+                LOGGER.info("Loading game state");
+                printWrapper.printLine("Game state loaded");
                 break;
 
             case "exit":
@@ -115,7 +112,6 @@ public class CommandHandler {
                 LOGGER.info("Unknown command");
                 printWrapper.printLine("Unknown command");
                 break;
-
         }
     }
 

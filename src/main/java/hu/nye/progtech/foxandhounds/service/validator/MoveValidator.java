@@ -113,14 +113,18 @@ public class MoveValidator {
      * @return {@code true} if the fox can move, {@code false} otherwise
      */
     public Boolean canMove(String foxLocation) {
-        char[][] map = gameState.getCurrentMap().getMap();
-        List<String> foxNeighbors = foxNeighbors(foxLocation);
         MapVO mapVO = gameState.getCurrentMap();
+        char[][] map = mapVO.getMap();
+        List<String> foxNeighbors = foxNeighbors(foxLocation);
 
-        return (isValidCoordinate(foxNeighbors.get(0)) && isFree(mapVO, foxNeighbors.get(0))) ||
-                (isValidCoordinate(foxNeighbors.get(1)) && isFree(mapVO, foxNeighbors.get(1))) ||
-                (isValidCoordinate(foxNeighbors.get(2)) && isFree(mapVO, foxNeighbors.get(2))) ||
-                (isValidCoordinate(foxNeighbors.get(3)) && isFree(mapVO, foxNeighbors.get(3)));
+        boolean canMove = false;
+        for (String x :
+                foxNeighbors) {
+            if (isValidCoordinate(x) && isFree(mapVO, x)) {
+                canMove = true;
+            }
+        }
+        return canMove;
     }
 
     private List<String> foxNeighbors(String foxLocation) {

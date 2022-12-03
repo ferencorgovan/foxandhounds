@@ -25,7 +25,7 @@ public class GameController {
      */
     public void playGame() {
         LOGGER.info("Starting game");
-        printWrapper.printLine("\nGame started! Type 'help' for commands.");
+        printWrapper.printLine("\nGame started!");
         while (!gameState.isGameOver()) {
             try {
                 gameStepPerformer.performGameStep();

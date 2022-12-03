@@ -7,6 +7,7 @@ import hu.nye.progtech.foxandhounds.service.map.RandomGenerator;
 import hu.nye.progtech.foxandhounds.service.validator.MoveValidator;
 import hu.nye.progtech.foxandhounds.ui.MapPrinter;
 import hu.nye.progtech.foxandhounds.ui.PrintWrapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -70,12 +71,15 @@ class MoveTest {
     private static final String ENEMY_MOVE = "Enemy's turn: ";
     private static final String ENEMY_MOVE_LOG = "Enemy moves Hound #" + 1 + " to " + EXPECTED_HOUND_ROW + EXPECTED_HOUND_COLUMN;
 
+    @BeforeEach
+    public void setUp() {
+        underTest = new Move(moveValidator, printWrapper, mapPrinter, randomGenerator);
+    }
 
     @Test
     public void testFoxMoveShouldPerformPlayerMove() {
         // given
         gameState = new GameState(MAP_VO, false, player);
-        underTest = new Move(moveValidator, printWrapper, mapPrinter, randomGenerator);
 
         // when
         underTest.foxMove(gameState, VALID_DESTINATION_COORDINATE);
@@ -91,7 +95,6 @@ class MoveTest {
     @Test
     public void testFoxMoveShouldSetGameOverIfFoxHasWon() {
         // given
-        underTest = new Move(moveValidator, printWrapper, mapPrinter, randomGenerator);
         gameState = new GameState(MAP_VO, false, player);
 
         // when

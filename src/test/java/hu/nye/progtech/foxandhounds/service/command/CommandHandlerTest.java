@@ -63,7 +63,6 @@ class CommandHandlerTest {
     private static final String INVALID_MOVE_COMMAND = "move --";
     private static final String VALID_MOVE_COMMAND = "move 21";
     private static final String VALID_COORDINATE = "21";
-    private static final String HELP_COMMAND = "help";
     private static final String PRINT_COMMAND = "print";
     private static final String EXIT_COMMAND = "exit";
     private static final String UNKNOWN_COMMAND = "anything";
@@ -76,15 +75,6 @@ class CommandHandlerTest {
     @BeforeEach
     public void setUp() {
         underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
-    }
-
-    @Test
-    public void testHandleCommandShouldPrintHelpWhenInputIsHelpCommand() {
-        // when
-        underTest.handleCommand(HELP_COMMAND);
-
-        // then
-        verify(printWrapper).printLine(anyString());
     }
 
     @Test
@@ -118,13 +108,13 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandShouldSetNameWhenInputIsNameCommand() {
         // given
-        gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
+        when(gameState.getPlayer()).thenReturn(player);
 
         // when
         underTest.handleCommand(VALID_NAME_INPUT);
 
         // then
+        verify(gameState.getPlayer()).setName(EXPECTED_NAME);
         verify(printWrapper).printLine(anyString());
     }
 
@@ -158,10 +148,6 @@ class CommandHandlerTest {
 
     @Test
     public void testHandleCommandShouldCallMoveMethodsWhenInputIsMoveCommand() {
-        // given
-        gameState = new GameState(MAP_VO, false, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
-
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);
 
@@ -185,13 +171,16 @@ class CommandHandlerTest {
     @Test
     public void testHandleCommandShouldExitGameWhenPlayerWins() {
         // given
-        gameState = new GameState(null, true, player);
-        underTest = new CommandHandler(mapPrinter, move, gameState, printWrapper, jdbcHighScoresRepository, xmlGameSavesRepository);
+       when(gameState.isGameOver()).thenReturn(true);
+        when(gameState.getPlayer()).thenReturn(player);
+        when(gameState.getPlayer().getName()).thenReturn(EXPECTED_NAME);
 
         // when
         underTest.handleCommand(VALID_MOVE_COMMAND);
 
         // then
+        verify(jdbcHighScoresRepository).saveHighScore(gameState.getPlayer());
         verify(printWrapper).printLine("\n" + gameState.getPlayer().getName() + " wins.");
+        verifyNoMoreInteractions(gameState);
     }
 }
